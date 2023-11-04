@@ -18,3 +18,5 @@ export default {
 // We need to install the package dotenv to read the environment variables from the .env file.
 
 // After setting it all we neet to push the schema using bunx drizzle-kit push:pg
+
+// To run studio: bunx drizzle-kit studio
