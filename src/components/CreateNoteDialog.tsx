@@ -4,12 +4,49 @@ import {Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogD
 import { Plus } from 'lucide-react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useMutation } from '@tanstack/react-query'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
+import {Loader2} from 'lucide-react'
 
 type Props = {}
 
 const 
 CreateNoteDialog = (props: Props) => {
     const [input, setInput] = React.useState('')
+    const router = useRouter();
+    const createNotebook = useMutation(
+        {
+            mutationFn: async () => {
+                const response = await axios.post('/api/createNoteBook',
+                { name: input },
+                )
+                return response.data
+            }
+        }
+    )
+
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
+        if (input === '') {
+            alert('Please enter a name for the notebook')
+            return
+        }
+
+        createNotebook.mutate(undefined, {
+            onSuccess: ({note_id}) => {
+               console.log('Created: ' + note_id)
+               router.push('/notebook/'+note_id)
+            },
+            onError: (error) => {
+                console.error(error)
+                window.alert('Failed to create a new notebook.')
+            }
+        })
+        console.log(input)
+    }
   return (
     <Dialog>
         <DialogTrigger>
@@ -26,13 +63,18 @@ CreateNoteDialog = (props: Props) => {
                 <DialogDescription>
                 You can create a new note by clicking the button below.                
                 </DialogDescription>
-                </DialogHeader>
-                <form>
+            </DialogHeader>
+                <form onSubmit={handleSubmit}>
                     <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder='Name...'/>
                     <div className="h-4"></div>
                     <div className="flex items-center gap-2">
                         <Button type='reset' variant={'secondary'}>Cancel</Button>
-                        <Button type='submit' className='bg-green-600'>Create</Button>
+                        <Button type='submit' className='bg-green-600' disabled={createNotebook.isLoading}>
+                            {createNotebook.isLoading && (
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin "/>
+                            )}
+                            Create
+                        </Button>
                     </div>
                 </form>
         </DialogContent>
