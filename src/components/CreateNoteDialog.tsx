@@ -13,6 +13,7 @@ type Props = {}
 
 const 
 CreateNoteDialog = (props: Props) => {
+    
     const [input, setInput] = React.useState('')
     const router = useRouter();
     const createNotebook = useMutation(
@@ -37,15 +38,14 @@ CreateNoteDialog = (props: Props) => {
 
         createNotebook.mutate(undefined, {
             onSuccess: ({note_id}) => {
-               console.log('Created: ' + note_id)
-               router.push('/notebook/'+note_id)
+               router.push(`/notebook/${note_id}`)
+               
             },
             onError: (error) => {
                 console.error(error)
                 window.alert('Failed to create a new notebook.')
             }
-        })
-        console.log(input)
+        }) 
     }
   return (
     <Dialog>
@@ -70,9 +70,6 @@ CreateNoteDialog = (props: Props) => {
                     <div className="flex items-center gap-2">
                         <Button type='reset' variant={'secondary'}>Cancel</Button>
                         <Button type='submit' className='bg-green-600' disabled={createNotebook.isLoading}>
-                            {createNotebook.isLoading && (
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin "/>
-                            )}
                             Create
                         </Button>
                     </div>

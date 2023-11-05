@@ -8,8 +8,9 @@ const config = new Configuration({
 const openai = new OpenAIApi(config);
 
 export async function generateImagePrompt(prompt: string) {
-
+    
     try{
+
         const response = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: [
@@ -25,10 +26,11 @@ export async function generateImagePrompt(prompt: string) {
 
         const data = await response.json();
         const image_description = data.choices[0].message.content;
-        return image_description as string;
+        return image_description as string
             
     }catch (e) {
-        console.log(e);
+
+        console.error(e);
         throw e;
     }
 
@@ -38,15 +40,16 @@ export async function generateImage(image_description: string) {
     try{
         const response = await openai.createImage(
             {
-                prompt:image_description,
+                prompt: image_description,
                 n:1,
                 size: '256x256'
 
             }
         )
         const data = await response.json()
-        const image_url = data.data[0].image_url
+        const image_url = data.data[0].url
         return image_url as string
+
     }catch(e){
         console.error(e)
     }
