@@ -15,6 +15,7 @@ const
 CreateNoteDialog = (props: Props) => {
     
     const [input, setInput] = React.useState('')
+    const [isSaving, setIsSaving] = React.useState(false)
     const router = useRouter();
     const createNotebook = useMutation(
         {
@@ -22,6 +23,7 @@ CreateNoteDialog = (props: Props) => {
                 const response = await axios.post('/api/createNoteBook',
                 { name: input },
                 )
+                setIsSaving(false)
                 return response.data
             }
         }
@@ -36,6 +38,8 @@ CreateNoteDialog = (props: Props) => {
             return
         }
 
+        setIsSaving(true)
+
         createNotebook.mutate(undefined, {
             onSuccess: ({note_id}) => {
                router.push(`/notebook/${note_id}`)
@@ -46,6 +50,8 @@ CreateNoteDialog = (props: Props) => {
                 window.alert('Failed to create a new notebook.')
             }
         }) 
+
+
     }
   return (
     <Dialog>
@@ -69,8 +75,8 @@ CreateNoteDialog = (props: Props) => {
                     <div className="h-4"></div>
                     <div className="flex items-center gap-2">
                         <Button type='reset' variant={'secondary'}>Cancel</Button>
-                        <Button type='submit' className='bg-green-600' disabled={createNotebook.isLoading}>
-                            {createNotebook.isLoading && (<Loader2 className='w-4 h-2 animate-spin' /> )}
+                        <Button type='submit' className='bg-green-600' disabled={isSaving}>
+                            {isSaving && (<Loader2 className='w-4 h-2 animate-spin' /> )}
                             Create
                         </Button>
                     </div>

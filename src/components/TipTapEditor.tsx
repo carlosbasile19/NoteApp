@@ -14,14 +14,17 @@ type Props = {note: NoteType}
 
 const TipTapEditor = ({note}: Props) => {
     const [editorState, setEditorState] = React.useState(note.editorState || '')
+    const [isSaving, setIsSaving] = React.useState(false)
     const saveNote = useMutation(
         {
             mutationFn: async () => {
+               
                 const response = await axios.post('/api/saveNote', 
                 {
                     noteId: note.id,
                     editorState: editorState
                 });
+                setIsSaving(false)
                 return response.data;
             },
         }
@@ -33,6 +36,7 @@ const TipTapEditor = ({note}: Props) => {
         extensions: [StarterKit],
         content: editorState,
         onUpdate: ({editor}) => {
+            setIsSaving(true)
             setEditorState(editor.getHTML())
         }
 
@@ -64,7 +68,7 @@ const TipTapEditor = ({note}: Props) => {
             )}
             
             <Button disabled variant={"outline"}>
-                {saveNote.isLoading ? "Saving..." : "Saved" }
+                {isSaving ? "Saving..." : "Saved" }
             </Button>
         </div>
         <div className="prose">
