@@ -7,6 +7,7 @@ import { and, eq } from 'drizzle-orm';
 import  Link  from 'next/link';
 import { Button } from '@/components/ui/button';
 import { clerk } from '@/lib/clerk-server';
+import TipTapEditor from '@/components/TipTapEditor';
 
 type Props = {
     params:{
@@ -59,9 +60,8 @@ const NotebookPage = async ({params: {noteId}}: Props) => {
                 <div className="h-4"></div>
                 <div className="border-stone-200 shadow-xl border rounded-lg px-16 py-8 w-full">
                 { /* Editor */}
-                
+                <TipTapEditor />
                 </div>
-                
             </div>    
         </div>
 
