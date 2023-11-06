@@ -70,6 +70,7 @@ CreateNoteDialog = (props: Props) => {
                     <div className="flex items-center gap-2">
                         <Button type='reset' variant={'secondary'}>Cancel</Button>
                         <Button type='submit' className='bg-green-600' disabled={createNotebook.isLoading}>
+                            {createNotebook.isLoading && (<Loader2 className='w-4 h-2 animate-spin' /> )}
                             Create
                         </Button>
                     </div>
